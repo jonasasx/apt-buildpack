@@ -1,8 +1,9 @@
 name: Release
 on:
-    release:
-        types:
-            - published
+    push:
+        branches: ["main", "feature/jammy-stack"]
+env:
+    REGISTRY: ghcr.io
 jobs:
     register:
         name: Package, Publish, and Register
@@ -16,9 +17,9 @@ jobs:
               name: Login to GitHub Package Registry
               uses: docker/login-action@v1
               with:
-                registry: ghcr.io
-                username: ${{ github.repository_owner }}
-                password: ${{ secrets.GHCR_TOKEN }}
+                registry: ${{ env.REGISTRY }}
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
             - id: setup-pack
               uses: buildpacks/github-actions/setup-pack@v4.1.0
             - id: package
